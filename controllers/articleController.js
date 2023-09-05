@@ -1,4 +1,4 @@
-import { isEmpty,isPositiveInteger } from "../helpers/validations.js";
+import { isEmpty, isPositiveInteger } from "../helpers/validations.js";
 import Article from "../models/Article.js";
 
 const createArticle = async (req, res) => {
@@ -77,5 +77,65 @@ const listArticle = async (req, res) => {
     });
   }
 };
+const getArticle = async (req, res) => {
+  const articleId = req.params.id;
+  try {
+    const article = await Article.findById(articleId);
+    //TODO: VALIDAR PARA CUANDO VEGA VACÍO UN ERROR
+    if (!article) {
+      const error = new Error("No Encontrado");
+      return res.status(404).json({ error: true, msg: error.message });
+    }
 
-export { createArticle, listArticle };
+    res.status(200).json({
+      success: true,
+      data: article,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Artículo no encontrado" });
+  }
+};
+const editArticle = async (req, res) => {
+  const articleId = req.params.id;
+  const updatedData = req.body;
+  try {
+    const updatedArticle = await Article.findByIdAndUpdate(
+      articleId,
+      updatedData,
+      { new: true } // Para obtener el artículo actualizado en la respuesta
+    );
+    if (!updatedArticle) {
+      return res.status(404).json({ error: "Artículo no encontrado" });
+    }
+    res.status(200).json({
+      success: true,
+      data: updatedArticle,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al editar el artículo" });
+  }
+};
+const deleteArticle = async (req, res) => {
+  const articleId = req.params.id;
+  try {
+    const deletedArticle = await Article.findByIdAndRemove(articleId);
+    if (!deletedArticle) {
+      const error = new Error("Artículo no encontrado");
+      return res.status(404).json({ error: true, msg: error.message });
+    }
+    res
+      .status(200)
+      .json({
+        success: true,
+        msg: "Artículo eliminado con éxito",
+        data: deletedArticle,
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al eliminar el artículo" });
+  }
+};
+
+export { createArticle, listArticle, getArticle, editArticle, deleteArticle };
