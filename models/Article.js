@@ -12,6 +12,11 @@ const articleSchema = mongoose.Schema(
       trim: true,
       require: true,
     },
+    summary:{
+      type: String,
+      trim: true,
+      require: true,
+    },
     imageURL: {
       type: String,
       trim: true,

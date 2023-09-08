@@ -16,12 +16,17 @@ const createArticle = async (req, res) => {
       msg: "el contenido es obligatorio",
     });
   }
+  if (isEmpty(req.body.summary)) {
+    return res.status(400).json({
+      msg: "el resumen es obligatorio",
+    });
+  }
   if (isEmpty(req.body.author)) {
     return res.status(400).json({
       msg: "el autor es obligatorio",
     });
   }
-  if (isEmpty(req.body.author)) {
+  if (isEmpty(req.body.label)) {
     return res.status(400).json({
       msg: "Indicar la categoría del artículo",
     });
